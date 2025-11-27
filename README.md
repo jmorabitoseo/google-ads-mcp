@@ -4,8 +4,10 @@ If you want to start testing this MCP server from your own machine, follow
 these simplified steps:
 
 1. **Prerequisites on your laptop**
-   - Install Python 3.10+ from `python.org` and make sure "Add Python to PATH"
+   - Install Python 3.10+ from `python.org` and make sure "Add Python to PATH`
      is checked.
+   - Install the Google Cloud CLI (`gcloud`): see
+     <https://cloud.google.com/sdk/docs/install>.
    - Install `pipx`:
 
      ```shell
@@ -17,13 +19,33 @@ these simplified steps:
      - [Gemini Code Assist](https://marketplace.visualstudio.com/items?itemName=Google.geminicodeassist), or
      - [Gemini CLI](https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/index.md).
 
-2. **Make sure you have these values**
-   - `GOOGLE_ADS_DEVELOPER_TOKEN` (Basic or higher access)
-   - `GOOGLE_ADS_LOGIN_CUSTOMER_ID` (your manager account ID, digits only)
-   - `GOOGLE_PROJECT_ID`
-   - `GOOGLE_APPLICATION_CREDENTIALS` (path to the ADC / service account JSON)
+2. **Create a Google Cloud credentials file (one‑time login)**
 
-3. **Create `~/.gemini/settings.json` on your machine**
+   In a terminal / PowerShell, run:
+
+   ```shell
+   gcloud auth application-default login --scopes "https://www.googleapis.com/auth/adwords,https://www.googleapis.com/auth/cloud-platform"
+   ```
+
+   A browser window will open. Log in with the Google account that has access
+   to your Google Ads manager account. When the command finishes it will print
+   a line like:
+
+   ```text
+   Credentials saved to file: [C:\Users\YOU\AppData\Roaming\gcloud\application_default_credentials.json]
+   ```
+
+   Copy that full path (without the square brackets). This file is your
+   `application_default_credentials.json` and is what the MCP server will use
+   to authenticate.
+
+3. **Make sure you have these values**
+   - `GOOGLE_ADS_DEVELOPER_TOKEN` (Basic or higher access, from Google Ads API Center)
+   - `GOOGLE_ADS_LOGIN_CUSTOMER_ID` (your manager account ID, digits only, no dashes)
+   - `GOOGLE_PROJECT_ID` (your Google Cloud project ID)
+   - `GOOGLE_APPLICATION_CREDENTIALS` (the path printed in step 2)
+
+4. **Create `~/.gemini/settings.json` on your machine**
 
    ```json
    {
@@ -37,7 +59,7 @@ these simplified steps:
            "google-ads-mcp"
          ],
          "env": {
-           "GOOGLE_APPLICATION_CREDENTIALS": "PATH_TO_CREDENTIALS_JSON",
+          "GOOGLE_APPLICATION_CREDENTIALS": "C:\\\\Users\\\\YOU\\\\AppData\\\\Roaming\\\\gcloud\\\\application_default_credentials.json",
            "GOOGLE_PROJECT_ID": "YOUR_PROJECT_ID",
            "GOOGLE_ADS_DEVELOPER_TOKEN": "YOUR_DEVELOPER_TOKEN",
            "GOOGLE_ADS_LOGIN_CUSTOMER_ID": "YOUR_MANAGER_CUSTOMER_ID"
@@ -47,7 +69,7 @@ these simplified steps:
    }
    ```
 
-4. **Test from Gemini**
+5. **Test from Gemini**
    - Launch Gemini Code Assist or Gemini CLI.
    - Type `/mcp` and verify that `google-ads-mcp` appears and is enabled.
    - Ask natural language questions, for example:
